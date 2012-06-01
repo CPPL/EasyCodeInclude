@@ -128,21 +128,23 @@ class plgContentEasyGitHubinclude extends JPlugin
 		$cache   = JFactory::getCache($plg_context,'');
 		if($useCache)
 			$cache->setCaching( $useCache );
+/*		$urlArray = str_split($url,1);*/
 		$hashURL = md5($url);
 		$output = $cache->get($hashURL);
 
 		// If it's not in cache let go get it...
 		if(!$output)
 		{
-			$codeURL = curl_init($url);
 			// is cURL installed yet?
 		    if (!function_exists('curl_init')){
 		        $jAp->enqueueMessage(JText::_('PLG_EASYGITHUBINCLUDE_CURL_NOT_INSTALLED'), 'Notice');
+		        return false;
 		    }
 			// Load user_profile plugin language
 			$lang = JFactory::getLanguage();
 			$lang->load($plg_context, JPATH_BASE . '/plugins/content/easygithubinclude');
 
+			$codeURL = curl_init($url);
 		 
 		    // Include header in result?
 		    curl_setopt($codeURL, CURLOPT_HEADER, 0);
@@ -153,14 +155,15 @@ class plgContentEasyGitHubinclude extends JPlugin
 		 
 		    // Download the given URL
 		    $output = curl_exec($codeURL);
-		    // Close the cURL resource, and free system resources
-		    curl_close($codeURL);
 			if ($output == '') {
 				$jAp->enqueueMessage(JText::_('PLG_EASYGITHUBINCLUDE_CURL_WASNT_ABLE_TO_GET_URL'), 'Notice');
 			}
 			$output = str_replace('<','&lt;',$output);
 			$cache->store($output, $hashURL,$plg_context);
+
+		    // Close the cURL resource, and free system resources
+		    curl_close($codeURL);
 		}
 		return $output;
-	} 
+	}
 }
