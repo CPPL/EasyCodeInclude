@@ -100,21 +100,22 @@ class plgContentEasyGitHubinclude extends JPlugin
 				
 				// Get the file
 				$output = $this->_getGitHubFile($url, $theme, $useCache);
-				// Time to wrap the output
-				switch ($wrapper) {
-					case 1:
-						$code = '<code class="prettyprint lang-' . $lang . ' ' . $linenumbers . '">' . $output . '</code>';
+				// If we have something...
+				if($output) {
+					// Time to wrap the output
+					switch ($wrapper) {
+						case 1:
+							$code = '<code class="prettyprint lang-' . $lang . ' ' . $linenumbers . '">' . $output . '</code>';
+							break;
+						case 2:
+							$code = '<pre class="prettyprint' . ' ' . $linenumbers . '"><code class="lang-' . $lang . '">' . $output . '</code></pre>';
+							break;
+						default:
+							$code = '<pre class="prettyprint lang-' . $lang . ' ' . $linenumbers . '">' . $output . '</pre>';
 						break;
-					case 2:
-						$code = '<pre class="prettyprint' . ' ' . $linenumbers . '"><code class="lang-' . $lang . '">' . $output . '</code></pre>';
-						break;
-					default:
-						$code = '<pre class="prettyprint lang-' . $lang . ' ' . $linenumbers . '">' . $output . '</pre>';
-					break;
+					}
+					$article->text = preg_replace("|$match[0]|", $code, $article->text, 1);
 				}
-				// We should replace only first occurrence in order to allow positions with the same name to regenerate their content:
-				//$article->text = preg_replace("|$match[0]|", addcslashes($code, '\\$'), $article->text, 1);
-				$article->text = preg_replace("|$match[0]|", $code, $article->text, 1);
 			}
 		}
 	}
