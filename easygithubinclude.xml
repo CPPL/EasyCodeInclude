@@ -7,19 +7,16 @@
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>support@seepeoplesoftware.com</authorEmail>
 	<authorUrl>http://seepeoplesoftware.com</authorUrl>
-	<version>1.0.0a1</version>
+	<version>1.0.0</version>
 	<description>PLG_EASYGITHUBINCLUDE_XML_DESCRIPTION</description>
 	<files>
-		<filename plugin="githubinclude">githubinclude.php</filename>
+		<filename plugin="easygithubinclude">easygithubinclude.php</filename>
 		<filename>index.html</filename>
+		<folder>language</folder>
+		<folder>prettify</folder>
 	</files>
-	<languages>
-		<language tag="en-GB">en-GB.plg_content_githubinclude.ini</language>
-		<language tag="en-GB">en-GB.plg_content_githubinclude.sys.ini</language>
-	</languages>
 	<config>
 		<fields name="params">
-
 			<fieldset name="basic">
 				<field name="inc_js" type="list"
 					default="1"
