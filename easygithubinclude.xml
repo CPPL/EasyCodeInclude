@@ -33,7 +33,7 @@
 					<option value="0">JNO</option>
 				</field>
 				<field name="wrapper" type="list"
-					default="1"
+					default="2"
 					description="PLG_EASYGITHUBINCLUDE_WRAPPER_DESC"
 					label="PLG_EASYGITHUBINCLUDE_WRAPPER_LABEL">
 					<option value="1">PLG_EASYGITHUBINCLUDE_WRAPPER_CODE</option>
@@ -58,7 +58,6 @@
 				</field>
 				
 			</fieldset>
-
 		</fields>
 	</config>
 </extension>

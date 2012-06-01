@@ -35,7 +35,7 @@ class plgContentEasyGitHubinclude extends JPlugin
 		$regex      = '/{githubinc\s+(.*?)}/i';
 		$inc_js     = $this->params->def('inc_js', 1);
 		$inc_css    = $this->params->def('inc_css', 1);
-		$wrapper    = $this->params->def('wrapper', 1);
+		$wrapper    = $this->params->def('wrapper', 2);
 		$defTheme   = $this->params->def('theme', 'prettify');
 		$prevThemes = '';
 		$useCache   = $this->params->def('force_cache', 1);
