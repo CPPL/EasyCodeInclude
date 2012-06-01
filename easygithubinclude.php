@@ -79,9 +79,16 @@ class plgContentEasyGitHubinclude extends JPlugin
 				}
 				$theme    = trim($matcheslist[1]);
 				// Make sure the owner wants the theme css loaded and that we haven't load one before
-				if($inc_css && ($prevThemes != '')) {
+				if($inc_css) {
+					if(($theme == '') || (trim($theme) == '')) {
+						$theme = $defTheme;
+					}
+					if(empty($prevThemes)) {
+						$prevThemes = $theme;
+					} else {
+						$theme = $prevThemes;
+					}
 					$doc->addStyleSheet("/plugins/content/easygithubinclude/prettify/$theme.css");
-					$prevThemes = $theme;
 				}
 
 				// We may not have a lang so get if from the URL.
