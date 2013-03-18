@@ -131,11 +131,45 @@ class plgContentEasyGitHubinclude extends JPlugin
 				{
 					$linenumbers = trim($matcheslist[3]);
 				}
-				
+
+				// Range of lines
+				$lines = '';
+
+				if (array_key_exists(4, $matcheslist))
+				{
+					$lines = explode('-', $matcheslist[4]);
+					$lines = count($lines) == 2 ? $lines : '';
+				}
+
 				// Get the file
-				$output = $this->_getGitHubFile($url, $theme, $useCache);
+				$fileOutput = $this->_getGitHubFile($url, $useCache);
+
 				// If we have something...
-				if($output) {
+				if ($fileOutput)
+				{
+					// Do we want the whole file or just a section
+					if ($lines != '')
+					{
+						$outputArray = preg_split("/(\r\n|\n|\r)/", $fileOutput);
+						$start = (int) $lines[0];
+						$end = (int) $lines[1];
+
+						if ($end < $start)
+						{
+							list($start,$end) = array($end,$start);
+							if($start == 0)
+							{
+								$start = 1;
+							}
+						}
+						$end++;
+						$selectedLines = array_slice($outputArray, ($start - 1), ($end - $start));
+						$output = implode(PHP_EOL, $selectedLines);
+					}
+					else
+					{
+						$output = $fileOutput;
+					}
 					// Time to wrap the output
 					switch ($wrapper)
 					{
