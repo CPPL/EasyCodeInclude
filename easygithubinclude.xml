@@ -18,6 +18,13 @@
 	<config>
 		<fields name="params">
 			<fieldset name="basic">
+                <field name="use_google" type="list"
+                       default="1"
+                       description="PLG_EASYGITHUBINCLUDE_USE_GOOGLE_DESCR"
+                       label="PLG_EASYGITHUBINCLUDE_USE_GOOGLE_LABEL">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
 				<field name="inc_js" type="list"
 					default="1"
 					description="PLG_EASYGITHUBINCLUDE_PRETTIFY_JS_DESC"
@@ -48,6 +55,7 @@
 					<option value="desert">PLG_EASYGITHUBINCLUDE_THEME_DESERT</option>
 					<option value="sunburst">PLG_EASYGITHUBINCLUDE_THEME_SUNBURST</option>
 					<option value="sons-of-obsidian">PLG_EASYGITHUBINCLUDE_THEME_SONS_OF_OBSIDIAN</option>
+                    <option value="doxy">PLG_EASYGITHUBINCLUDE_THEME_DOXY</option>
 				</field>
 				<field name="force_cache" type="list"
 					default="1"
@@ -56,7 +64,6 @@
 					<option value="1">JYES</option>
 					<option value="0">JNO</option>
 				</field>
-				
 			</fieldset>
 		</fields>
 	</config>

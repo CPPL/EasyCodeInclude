@@ -40,6 +40,7 @@ class plgContentEasyGitHubinclude extends JPlugin
 
 		// Expression to search for (positions)
 		$regex      = '/{githubinc\s+(.*?)}/i';
+		$useGoogle  = $this->params->def('use_google', 1);
 		$inc_js     = $this->params->def('inc_js', 1);
 		$inc_css    = $this->params->def('inc_css', 1);
 		$wrapper    = $this->params->def('wrapper', 2);
@@ -57,7 +58,7 @@ class plgContentEasyGitHubinclude extends JPlugin
 			// We can load the prettyfier.js & css and our kickoff js
 			$doc = JFactory::getDocument();
 
-			if ($inc_js)
+			if ($inc_js && !$useGoogle)
 			{
 				$kickoffjs = "addEventListener('load', function (event) { prettyPrint() }, false);";
 				$doc->addScriptDeclaration($kickoffjs);
@@ -89,6 +90,9 @@ class plgContentEasyGitHubinclude extends JPlugin
 						case '3':
 							$matcheslist[1] = 'sons-of-obsidian';
 							break;
+						case '4':
+							$matcheslist[1] = 'doxy';
+							break;
 						default:
 							$matcheslist[1] = 'prettify';
 							break;
@@ -97,21 +101,21 @@ class plgContentEasyGitHubinclude extends JPlugin
 				$theme    = trim($matcheslist[1]);
 
 				// Make sure the owner wants the theme css loaded and that we haven't load one before
-				if ($inc_css)
+				if (($theme == '') || (trim($theme) == ''))
 				{
-					if (($theme == '') || (trim($theme) == ''))
-					{
-						$theme = $defTheme;
-					}
+					$theme = $defTheme;
+				}
 
-					if (empty($prevThemes))
-					{
-						$prevThemes = $theme;
-					}
-					else
-					{
-						$theme = $prevThemes;
-					}
+				if (empty($prevThemes))
+				{
+					$prevThemes = $theme;
+				}
+				else
+				{
+					$theme = $prevThemes;
+				}
+				if ($inc_css && !$useGoogle)
+				{
 					$doc->addStyleSheet("/plugins/content/easygithubinclude/prettify/$theme.css");
 				}
 
@@ -131,6 +135,16 @@ class plgContentEasyGitHubinclude extends JPlugin
 				{
 					$linenumbers = trim($matcheslist[3]);
 				}
+
+				if ($useGoogle)
+				{
+					if ($lang)
+					{
+						$lang = 'lang=' . $lang . '&';
+					}
+					$doc->addScript('https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?' . $lang . 'skin=' . $theme);
+				}
+
 
 				// Range of lines
 				$lines = '';
@@ -157,7 +171,8 @@ class plgContentEasyGitHubinclude extends JPlugin
 						if ($end < $start)
 						{
 							list($start,$end) = array($end,$start);
-							if($start == 0)
+
+							if ($start == 0)
 							{
 								$start = 1;
 							}
