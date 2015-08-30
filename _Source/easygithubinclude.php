@@ -2,7 +2,7 @@
 /**
  * @package     Joomla.Plugin
  * @subpackage  Content.easygithubinclude
- * @copyright   Copyright (C) 2012-2015 Craig Phillips Pty Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2012 - ##CURYEAR## Craig Phillips Pty Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
