@@ -103,7 +103,7 @@ class plgContentEasyCodeInclude extends JPlugin
                         $theme = $prevThemes;
                     }
                     if ($inc_css && !$useGoogle) {
-                        $doc->addStyleSheet("/plugins/content/easycodeinclude/prettify/$theme.css");
+                        $doc->addStyleSheet("/plugins/content/easycodeinclude/prettify/skins/$theme.css");
                     }
 
                     // We may not have a lang so get if from the URL.
@@ -128,7 +128,6 @@ class plgContentEasyCodeInclude extends JPlugin
                         }
                         $doc->addScript('https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?' . $lang . 'skin=' . $theme);
                     }
-
 
                     // Range of lines
                     $lines = '';
