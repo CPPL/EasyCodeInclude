@@ -1,8 +1,8 @@
 <?php
 /**
  * @package     Joomla.Plugin
- * @subpackage  Content.loadmodule
- * @copyright   Copyright (C) 2012-2013 Craig Phillips Pty Ltd. All rights reserved.
+ * @subpackage  Content.easygithubinclude
+ * @copyright   Copyright (C) 2012-2015 Craig Phillips Pty Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -27,14 +27,12 @@ class plgContentEasyGitHubinclude extends JPlugin
     public function onContentPrepare($context, &$article, &$params, $page = 0)
     {
         // Don't run this plugin when the content is being indexed
-        if ($context == 'com_finder.indexer')
-        {
+        if ($context == 'com_finder.indexer') {
             return true;
         }
 
         // Simple performance check to determine whether bot should process further
-        if (strpos($article->text, 'githubinc') === false)
-        {
+        if (strpos($article->text, 'githubinc') === false) {
             return true;
         }
 
@@ -53,34 +51,27 @@ class plgContentEasyGitHubinclude extends JPlugin
         preg_match_all($regex, $article->text, $matches, PREG_SET_ORDER);
 
         // No matches, skip this
-        if ($matches)
-        {
+        if ($matches) {
             // We can load the prettyfier.js & css and our kickoff js
             $doc = JFactory::getDocument();
 
-            if ($inc_js && !$useGoogle)
-            {
+            if ($inc_js && !$useGoogle) {
                 $kickoffjs = "addEventListener('load', function (event) { prettyPrint() }, false);";
                 $doc->addScriptDeclaration($kickoffjs);
                 $doc->addScript('/plugins/content/easygithubinclude/prettify/prettify.js');
             }
 
-            foreach ($matches as $match)
-            {
+            foreach ($matches as $match) {
 
                 $matcheslist = explode(',', $match[1]);
 
                 $url      = trim($matcheslist[0]);
 
                 // We may not have a theme so get the plugin default.
-                if (!array_key_exists(1, $matcheslist) || $matcheslist[1] == ' ' || $matcheslist[1] == '')
-                {
+                if (!array_key_exists(1, $matcheslist) || $matcheslist[1] == ' ' || $matcheslist[1] == '') {
                     $matcheslist[1] = $defTheme;
-                }
-                else
-                {
-                    switch ($matcheslist[1])
-                    {
+                } else {
+                    switch ($matcheslist[1]) {
                         case '1':
                             $matcheslist[1] = 'desert';
                             break;
@@ -98,48 +89,41 @@ class plgContentEasyGitHubinclude extends JPlugin
                             break;
                     }
                 }
-                $theme    = trim($matcheslist[1]);
+                $theme = trim($matcheslist[1]);
 
                 // Make sure the owner wants the theme css loaded and that we haven't load one before
-                if (($theme == '') || (trim($theme) == ''))
-                {
-                    $theme = $defTheme;
-                }
+                if ($inc_css) {
+                    if (($theme == '') || (trim($theme) == '')) {
+                        $theme = $defTheme;
+                    }
 
-                if (empty($prevThemes))
-                {
-                    $prevThemes = $theme;
-                }
-                else
-                {
-                    $theme = $prevThemes;
-                }
-                if ($inc_css && !$useGoogle)
-                {
+                    if (empty($prevThemes)) {
+                        $prevThemes = $theme;
+                    } else {
+                        $theme = $prevThemes;
+                    }
+                if ($inc_css && !$useGoogle) {
                     $doc->addStyleSheet("/plugins/content/easygithubinclude/prettify/$theme.css");
                 }
 
                 // We may not have a lang so get if from the URL.
-                if (!array_key_exists(2, $matcheslist) || $matcheslist[2] == ' ' || $matcheslist[2] == '')
-                {
+                if (!array_key_exists(2, $matcheslist) || $matcheslist[2] == ' ' || $matcheslist[2] == '') {
                     $lastSeg = substr($url, strrpos($url, '/') + 1);
                     $fs = substr($lastSeg, strrpos($lastSeg, '.') + 1);
                     $matcheslist[2] = $fs;
                 }
-                $lang     = trim($matcheslist[2]);
+
+                $lang = trim($matcheslist[2]);
 
                 // Line numbers?
                 $linenumbers = '';
 
-                if (array_key_exists(3, $matcheslist))
-                {
+                if (array_key_exists(3, $matcheslist)) {
                     $linenumbers = trim($matcheslist[3]);
                 }
 
-                if ($useGoogle)
-                {
-                    if ($lang)
-                    {
+                if ($useGoogle) {
+                    if ($lang) {
                         $lang = 'lang=' . $lang . '&';
                     }
                     $doc->addScript('https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?' . $lang . 'skin=' . $theme);
@@ -149,8 +133,7 @@ class plgContentEasyGitHubinclude extends JPlugin
                 // Range of lines
                 $lines = '';
 
-                if (array_key_exists(4, $matcheslist))
-                {
+                if (array_key_exists(4, $matcheslist)) {
                     $lines = explode('-', $matcheslist[4]);
                     $lines = count($lines) == 2 ? $lines : '';
                 }
@@ -159,35 +142,30 @@ class plgContentEasyGitHubinclude extends JPlugin
                 $fileOutput = $this->_getGitHubFile($url, $useCache);
 
                 // If we have something...
-                if ($fileOutput)
-                {
+                if ($fileOutput) {
                     // Do we want the whole file or just a section
-                    if ($lines != '')
-                    {
+                    if ($lines != '') {
                         $outputArray = preg_split("/(\r\n|\n|\r)/", $fileOutput);
                         $start = (int) $lines[0];
                         $end = (int) $lines[1];
 
-                        if ($end < $start)
-                        {
+                        if ($end < $start) {
                             list($start,$end) = array($end,$start);
 
-                            if ($start == 0)
-                            {
+                            if ($start == 0) {
                                 $start = 1;
                             }
                         }
+
                         $end++;
                         $selectedLines = array_slice($outputArray, ($start - 1), ($end - $start));
                         $output = implode(PHP_EOL, $selectedLines);
-                    }
-                    else
-                    {
+                    } else {
                         $output = $fileOutput;
                     }
+
                     // Time to wrap the output
-                    switch ($wrapper)
-                    {
+                    switch ($wrapper) {
                         case 1:
                             $code = '<code class="prettyprint lang-' . $lang . ' ' . $linenumbers . '">' . $output . '</code>';
                             break;
@@ -221,19 +199,17 @@ class plgContentEasyGitHubinclude extends JPlugin
         $plg_context = 'plg_content_easygithubinclude';
         $cache = JFactory::getCache($plg_context, '');
 
-        if ($useCache)
-        {
+        if ($useCache) {
             $cache->setCaching($useCache);
         }
+
         $hashURL = md5($url);
         $output = $cache->get($hashURL);
 
         // If it's not in cache let go get it...
-        if (!$output)
-        {
+        if (!$output) {
             // Is cURL installed yet?
-            if (!function_exists('curl_init'))
-            {
+            if (!function_exists('curl_init')) {
                 $jAp->enqueueMessage(JText::_('PLG_EASYGITHUBINCLUDE_CURL_NOT_INSTALLED'), 'Notice');
 
                 return false;
@@ -256,8 +232,7 @@ class plgContentEasyGitHubinclude extends JPlugin
             // Download the given URL
             $output = curl_exec($codeURL);
 
-            if ($output == '')
-            {
+            if ($output == '') {
                 $jAp->enqueueMessage(JText::_('PLG_EASYGITHUBINCLUDE_CURL_WASNT_ABLE_TO_GET_URL'), 'Notice');
             }
 
