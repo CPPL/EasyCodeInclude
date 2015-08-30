@@ -126,7 +126,7 @@ class plgContentEasyCodeInclude extends JPlugin
                         if ($lang) {
                             $lang = 'lang=' . $lang . '&';
                         }
-                        $doc->addScript('https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?' . $lang . 'skin=' . $theme);
+                        $doc->addScript('https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?' . $lang . 'skin=' . $theme);
                     }
 
 
