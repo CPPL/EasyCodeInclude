@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     Joomla.Plugin
- * @subpackage  Content.easygithubinclude
+ * @subpackage  Content.easycodeinclude
  * @copyright   Copyright (C) 2012 - ##CURYEAR## Craig Phillips Pty Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -9,10 +9,10 @@
 // no direct access
 defined('_JEXEC') or die;
 
-class plgContentEasyGitHubinclude extends JPlugin
+class plgContentEasyCodeInclude extends JPlugin
 {
     /**
-     * Plugin that loads the specified github URL within content (actually it will load any url).
+     * Plugin that loads the specified URL within content.
      *
      * @param   string  $context   The context of the content being passed to the plugin.
      *
@@ -32,12 +32,12 @@ class plgContentEasyGitHubinclude extends JPlugin
         }
 
         // Simple performance check to determine whether bot should process further
-        if (strpos($article->text, 'githubinc') === false) {
+        if (strpos($article->text, 'easycodeinc') === false) {
             return true;
         }
 
         // Expression to search for (positions)
-        $regex      = '/{githubinc\s+(.*?)}/i';
+        $regex      = '/{easycodeinc\s+(.*?)}/i';
         $useGoogle  = $this->params->def('use_google', 1);
         $inc_js     = $this->params->def('inc_js', 1);
         $inc_css    = $this->params->def('inc_css', 1);
@@ -46,7 +46,7 @@ class plgContentEasyGitHubinclude extends JPlugin
         $prevThemes = '';
         $useCache   = $this->params->def('force_cache', 1);
 
-        // Find all instances of plugin and put in $matches for githubinc
+        // Find all instances of plugin and put in $matches for easycodeinc
         // $matches[0] is full pattern match, $matches[1] is the position
         preg_match_all($regex, $article->text, $matches, PREG_SET_ORDER);
 
@@ -58,7 +58,7 @@ class plgContentEasyGitHubinclude extends JPlugin
             if ($inc_js && !$useGoogle) {
                 $kickoffjs = "addEventListener('load', function (event) { prettyPrint() }, false);";
                 $doc->addScriptDeclaration($kickoffjs);
-                $doc->addScript('/plugins/content/easygithubinclude/prettify/prettify.js');
+                $doc->addScript('/plugins/content/easycodeinclude/prettify/prettify.js');
             }
 
             foreach ($matches as $match) {
@@ -103,7 +103,7 @@ class plgContentEasyGitHubinclude extends JPlugin
                         $theme = $prevThemes;
                     }
                     if ($inc_css && !$useGoogle) {
-                        $doc->addStyleSheet("/plugins/content/easygithubinclude/prettify/$theme.css");
+                        $doc->addStyleSheet("/plugins/content/easycodeinclude/prettify/$theme.css");
                     }
 
                     // We may not have a lang so get if from the URL.
@@ -139,7 +139,7 @@ class plgContentEasyGitHubinclude extends JPlugin
                     }
 
                     // Get the file
-                    $fileOutput = $this->_getGitHubFile($url, $useCache);
+                    $fileOutput = $this->getCodeFile($url, $useCache);
 
                     // If we have something...
                     if ($fileOutput) {
@@ -192,12 +192,12 @@ class plgContentEasyGitHubinclude extends JPlugin
      *
      * @return bool|mixed
      */
-    private function _getGitHubFile($url, $useCache)
+    private function getCodeFile($url, $useCache)
     {
         $jAp     = JFactory::getApplication();
 
         // Setup the cache
-        $plg_context = 'plg_content_easygithubinclude';
+        $plg_context = 'plg_content_easycodeinclude';
         $cache = JFactory::getCache($plg_context, '');
 
         if ($useCache) {
@@ -211,13 +211,13 @@ class plgContentEasyGitHubinclude extends JPlugin
         if (!$output) {
             // Is cURL installed yet?
             if (!function_exists('curl_init')) {
-                $jAp->enqueueMessage(JText::_('PLG_EASYGITHUBINCLUDE_CURL_NOT_INSTALLED'), 'Notice');
+                $jAp->enqueueMessage(JText::_('PLG_EASYCODEINCLUDE_CURL_NOT_INSTALLED'), 'Notice');
 
                 return false;
             }
             // Load user_profile plugin language
             $lang = JFactory::getLanguage();
-            $lang->load($plg_context, JPATH_BASE . '/plugins/content/easygithubinclude');
+            $lang->load($plg_context, JPATH_BASE . '/plugins/content/easycodeinclude');
 
             $codeURL = curl_init($url);
 
@@ -234,7 +234,7 @@ class plgContentEasyGitHubinclude extends JPlugin
             $output = curl_exec($codeURL);
 
             if ($output == '') {
-                $jAp->enqueueMessage(JText::_('PLG_EASYGITHUBINCLUDE_CURL_WASNT_ABLE_TO_GET_URL'), 'Notice');
+                $jAp->enqueueMessage(JText::_('PLG_EASYCODEINCLUDE_CURL_WASNT_ABLE_TO_GET_URL'), 'Notice');
             }
 
             $output = str_replace('<', '&lt;', $output);

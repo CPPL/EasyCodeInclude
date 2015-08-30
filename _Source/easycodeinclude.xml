@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="plugin" group="content" method="upgrade">
-    <name>plg_content_easygithubinclude</name>
+    <name>plg_content_easycodeinclude</name>
     <author>&lt;a href="http://craigphillips.biz" target="_blank"&gt;Craig Phillips&lt;/a&gt;</author>
     <creationDate>##CREATEDATE##</creationDate>
     <copyright>Copyright (C) 2012 - ##CURYEAR## Craig Phillips Pty Ltd. All rights reserved.</copyright>
@@ -8,9 +8,9 @@
     <authorEmail>support@seepeoplesoftware.com</authorEmail>
     <authorUrl>http://seepeoplesoftware.com</authorUrl>
     <version>##VER## (##COMHASH##)</version>
-    <description>PLG_EASYGITHUBINCLUDE_XML_DESCRIPTION</description>
+    <description>PLG_EASYCODEINCLUDE_XML_DESCRIPTION</description>
     <files>
-        <filename plugin="easygithubinclude">easygithubinclude.php</filename>
+        <filename plugin="easycodeinclude">easycodeinclude.php</filename>
         <filename>index.html</filename>
         <folder>language</folder>
         <folder>prettify</folder>
@@ -20,47 +20,47 @@
             <fieldset name="basic">
                 <field name="use_google" type="list"
                        default="1"
-                       description="PLG_EASYGITHUBINCLUDE_USE_GOOGLE_DESCR"
-                       label="PLG_EASYGITHUBINCLUDE_USE_GOOGLE_LABEL">
+                       description="PLG_EASYCODEINCLUDE_USE_GOOGLE_DESCR"
+                       label="PLG_EASYCODEINCLUDE_USE_GOOGLE_LABEL">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
                 <field name="inc_js" type="list"
                     default="1"
-                    description="PLG_EASYGITHUBINCLUDE_PRETTIFY_JS_DESC"
-                    label="PLG_EASYGITHUBINCLUDE_PRETTIFY_JS_LABEL">
+                    description="PLG_EASYCODEINCLUDE_PRETTIFY_JS_DESC"
+                    label="PLG_EASYCODEINCLUDE_PRETTIFY_JS_LABEL">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
                 <field name="inc_css" type="list"
                     default="1"
-                    description="PLG_EASYGITHUBINCLUDE_CSS_DESC"
-                    label="PLG_EASYGITHUBINCLUDE_CSS_LABEL">
+                    description="PLG_EASYCODEINCLUDE_CSS_DESC"
+                    label="PLG_EASYCODEINCLUDE_CSS_LABEL">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
                 <field name="wrapper" type="list"
                     default="2"
-                    description="PLG_EASYGITHUBINCLUDE_WRAPPER_DESC"
-                    label="PLG_EASYGITHUBINCLUDE_WRAPPER_LABEL">
-                    <option value="1">PLG_EASYGITHUBINCLUDE_WRAPPER_CODE</option>
-                    <option value="2">PLG_EASYGITHUBINCLUDE_WRAPPER_CODE_INSIDE_PRE</option>
-                    <option value="0">PLG_EASYGITHUBINCLUDE_WRAPPER_PRE_ONLY</option>
+                    description="PLG_EASYCODEINCLUDE_WRAPPER_DESC"
+                    label="PLG_EASYCODEINCLUDE_WRAPPER_LABEL">
+                    <option value="1">PLG_EASYCODEINCLUDE_WRAPPER_CODE</option>
+                    <option value="2">PLG_EASYCODEINCLUDE_WRAPPER_CODE_INSIDE_PRE</option>
+                    <option value="0">PLG_EASYCODEINCLUDE_WRAPPER_PRE_ONLY</option>
                 </field>
                 <field name="theme" type="list"
                     default="0"
-                    description="PLG_EASYGITHUBINCLUDE_PRETTIFY_THEME_DESC"
-                    label="PLG_EASYGITHUBINCLUDE_PRETTIFY_THEME_LABEL">
-                    <option value="prettify">PLG_EASYGITHUBINCLUDE_THEME_DEFAULT</option>
-                    <option value="desert">PLG_EASYGITHUBINCLUDE_THEME_DESERT</option>
-                    <option value="sunburst">PLG_EASYGITHUBINCLUDE_THEME_SUNBURST</option>
-                    <option value="sons-of-obsidian">PLG_EASYGITHUBINCLUDE_THEME_SONS_OF_OBSIDIAN</option>
-                    <option value="doxy">PLG_EASYGITHUBINCLUDE_THEME_DOXY</option>
+                    description="PLG_EASYCODEINCLUDE_PRETTIFY_THEME_DESC"
+                    label="PLG_EASYCODEINCLUDE_PRETTIFY_THEME_LABEL">
+                    <option value="prettify">PLG_EASYCODEINCLUDE_THEME_DEFAULT</option>
+                    <option value="desert">PLG_EASYCODEINCLUDE_THEME_DESERT</option>
+                    <option value="sunburst">PLG_EASYCODEINCLUDE_THEME_SUNBURST</option>
+                    <option value="sons-of-obsidian">PLG_EASYCODEINCLUDE_THEME_SONS_OF_OBSIDIAN</option>
+                    <option value="doxy">PLG_EASYCODEINCLUDE_THEME_DOXY</option>
                 </field>
                 <field name="force_cache" type="list"
                     default="1"
-                    description="PLG_EASYGITHUBINCLUDE_FORCE_CACHE_DESC"
-                    label="PLG_EASYGITHUBINCLUDE_FORCE_CACHE_LABEL">
+                    description="PLG_EASYCODEINCLUDE_FORCE_CACHE_DESC"
+                    label="PLG_EASYCODEINCLUDE_FORCE_CACHE_LABEL">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
