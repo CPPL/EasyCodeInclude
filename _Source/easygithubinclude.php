@@ -65,7 +65,7 @@ class plgContentEasyGitHubinclude extends JPlugin
 
                 $matcheslist = explode(',', $match[1]);
 
-                $url      = trim($matcheslist[0]);
+                $url = trim($matcheslist[0]);
 
                 // We may not have a theme so get the plugin default.
                 if (!array_key_exists(1, $matcheslist) || $matcheslist[1] == ' ' || $matcheslist[1] == '') {
@@ -102,81 +102,82 @@ class plgContentEasyGitHubinclude extends JPlugin
                     } else {
                         $theme = $prevThemes;
                     }
-                if ($inc_css && !$useGoogle) {
-                    $doc->addStyleSheet("/plugins/content/easygithubinclude/prettify/$theme.css");
-                }
-
-                // We may not have a lang so get if from the URL.
-                if (!array_key_exists(2, $matcheslist) || $matcheslist[2] == ' ' || $matcheslist[2] == '') {
-                    $lastSeg = substr($url, strrpos($url, '/') + 1);
-                    $fs = substr($lastSeg, strrpos($lastSeg, '.') + 1);
-                    $matcheslist[2] = $fs;
-                }
-
-                $lang = trim($matcheslist[2]);
-
-                // Line numbers?
-                $linenumbers = '';
-
-                if (array_key_exists(3, $matcheslist)) {
-                    $linenumbers = trim($matcheslist[3]);
-                }
-
-                if ($useGoogle) {
-                    if ($lang) {
-                        $lang = 'lang=' . $lang . '&';
+                    if ($inc_css && !$useGoogle) {
+                        $doc->addStyleSheet("/plugins/content/easygithubinclude/prettify/$theme.css");
                     }
-                    $doc->addScript('https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?' . $lang . 'skin=' . $theme);
-                }
+
+                    // We may not have a lang so get if from the URL.
+                    if (!array_key_exists(2, $matcheslist) || $matcheslist[2] == ' ' || $matcheslist[2] == '') {
+                        $lastSeg = substr($url, strrpos($url, '/') + 1);
+                        $fs = substr($lastSeg, strrpos($lastSeg, '.') + 1);
+                        $matcheslist[2] = $fs;
+                    }
+
+                    $lang = trim($matcheslist[2]);
+
+                    // Line numbers?
+                    $linenumbers = '';
+
+                    if (array_key_exists(3, $matcheslist)) {
+                        $linenumbers = trim($matcheslist[3]);
+                    }
+
+                    if ($useGoogle) {
+                        if ($lang) {
+                            $lang = 'lang=' . $lang . '&';
+                        }
+                        $doc->addScript('https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?' . $lang . 'skin=' . $theme);
+                    }
 
 
-                // Range of lines
-                $lines = '';
+                    // Range of lines
+                    $lines = '';
 
-                if (array_key_exists(4, $matcheslist)) {
-                    $lines = explode('-', $matcheslist[4]);
-                    $lines = count($lines) == 2 ? $lines : '';
-                }
+                    if (array_key_exists(4, $matcheslist)) {
+                        $lines = explode('-', $matcheslist[4]);
+                        $lines = count($lines) == 2 ? $lines : '';
+                    }
 
-                // Get the file
-                $fileOutput = $this->_getGitHubFile($url, $useCache);
+                    // Get the file
+                    $fileOutput = $this->_getGitHubFile($url, $useCache);
 
-                // If we have something...
-                if ($fileOutput) {
-                    // Do we want the whole file or just a section
-                    if ($lines != '') {
-                        $outputArray = preg_split("/(\r\n|\n|\r)/", $fileOutput);
-                        $start = (int) $lines[0];
-                        $end = (int) $lines[1];
+                    // If we have something...
+                    if ($fileOutput) {
+                        // Do we want the whole file or just a section
+                        if ($lines != '') {
+                            $outputArray = preg_split("/(\r\n|\n|\r)/", $fileOutput);
+                            $start = (int)$lines[0];
+                            $end = (int)$lines[1];
 
-                        if ($end < $start) {
-                            list($start,$end) = array($end,$start);
+                            if ($end < $start) {
+                                list($start, $end) = array($end, $start);
 
-                            if ($start == 0) {
-                                $start = 1;
+                                if ($start == 0) {
+                                    $start = 1;
+                                }
                             }
+
+                            $end++;
+                            $selectedLines = array_slice($outputArray, ($start - 1), ($end - $start));
+                            $output = implode(PHP_EOL, $selectedLines);
+                        } else {
+                            $output = $fileOutput;
                         }
 
-                        $end++;
-                        $selectedLines = array_slice($outputArray, ($start - 1), ($end - $start));
-                        $output = implode(PHP_EOL, $selectedLines);
-                    } else {
-                        $output = $fileOutput;
+                        // Time to wrap the output
+                        switch ($wrapper) {
+                            case 1:
+                                $code = '<code class="prettyprint lang-' . $lang . ' ' . $linenumbers . '">' . $output . '</code>';
+                                break;
+                            case 2:
+                                $code = '<pre class="prettyprint' . ' ' . $linenumbers . '"><code class="lang-' . $lang . '">' . $output . '</code></pre>';
+                                break;
+                            default:
+                                $code = '<pre class="prettyprint lang-' . $lang . ' ' . $linenumbers . '">' . $output . '</pre>';
+                                break;
+                        }
+                        $article->text = preg_replace("|$match[0]|", $code, $article->text, 1);
                     }
-
-                    // Time to wrap the output
-                    switch ($wrapper) {
-                        case 1:
-                            $code = '<code class="prettyprint lang-' . $lang . ' ' . $linenumbers . '">' . $output . '</code>';
-                            break;
-                        case 2:
-                            $code = '<pre class="prettyprint' . ' ' . $linenumbers . '"><code class="lang-' . $lang . '">' . $output . '</code></pre>';
-                            break;
-                        default:
-                            $code = '<pre class="prettyprint lang-' . $lang . ' ' . $linenumbers . '">' . $output . '</pre>';
-                        break;
-                    }
-                    $article->text = preg_replace("|$match[0]|", $code, $article->text, 1);
                 }
             }
         }
