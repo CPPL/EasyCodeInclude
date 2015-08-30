@@ -106,7 +106,7 @@ class plgContentEasyCodeInclude extends JPlugin
                         $doc->addStyleSheet("/plugins/content/easycodeinclude/prettify/skins/$theme.css");
                     }
 
-                    // We may not have a lang so get if from the URL.
+                    // We may not have a lang so get it from the URL.
                     if (!array_key_exists(2, $matcheslist) || $matcheslist[2] == ' ' || $matcheslist[2] == '') {
                         $lastSeg = substr($url, strrpos($url, '/') + 1);
                         $fs = substr($lastSeg, strrpos($lastSeg, '.') + 1);
@@ -193,55 +193,94 @@ class plgContentEasyCodeInclude extends JPlugin
      */
     private function getCodeFile($url, $useCache)
     {
-        $jAp     = JFactory::getApplication();
-
         // Setup the cache
         $plg_context = 'plg_content_easycodeinclude';
-        $cache = JFactory::getCache($plg_context, '');
+        $cache       = JFactory::getCache($plg_context, '');
+
+        // Load user_profile plugin language
+        $lang = JFactory::getLanguage();
+        $lang->load($plg_context, JPATH_BASE . '/plugins/content/easycodeinclude');
 
         if ($useCache) {
             $cache->setCaching($useCache);
         }
 
         $hashURL = md5($url);
-        $output = $cache->get($hashURL);
+        $output  = $cache->get($hashURL);
 
-        // If it's not in cache let go get it...
+        // If it's not in cache lets go get it...
         if (!$output) {
             // Is cURL installed yet?
+            $output = $this->loadFile($url, $cache, $hashURL, $plg_context);
+        }
+
+        return $output;
+    }
+
+    /**
+     * Load file will retreive a file from a http source or a path relative to the webroot.
+     *
+     * @param   string            $url          The source file location.
+     *
+     * @param   JCacheController  $cache        The Joomla Cache controller.
+     *
+     * @param   string            $hashURL      The url hash used for setting and retrieving the cached file.
+     *
+     * @param   string            $plg_context  The context under which the file is cached.
+     *
+     * @return  bool|mixed
+     *
+     * @since   1.2
+     */
+    private function loadFile($url, $cache, $hashURL, $plg_context)
+    {
+        $jAp = JFactory::getApplication();
+
+        if (strpos($url, 'http') == false && substr($url,0,1) == '/') {
+            $filePath = JPATH_BASE . $url;
+
+            if (file_exists($filePath)) {
+                $output = file_get_contents($filePath);
+            } else {
+                $output = false;
+            }
+        } else {
+            // We'll try and get the file from the URL
             if (!function_exists('curl_init')) {
                 $jAp->enqueueMessage(JText::_('PLG_EASYCODEINCLUDE_CURL_NOT_INSTALLED'), 'Notice');
 
-                return false;
+                $output = false;
+            } else {
+                $codeURL = curl_init($url);
+
+                // Include header in result?
+                curl_setopt($codeURL, CURLOPT_HEADER, 0);
+
+                // We want the data returned not printed
+                curl_setopt($codeURL, CURLOPT_RETURNTRANSFER, 1);
+
+                // Timeout in seconds
+                curl_setopt($codeURL, CURLOPT_TIMEOUT, 10);
+
+                // Download the given URL
+                $output = curl_exec($codeURL);
+
+                if ($output == '') {
+                    $jAp->enqueueMessage(JText::_('PLG_EASYCODEINCLUDE_CURL_WASNT_ABLE_TO_GET_URL'), 'Notice');
+                    $output = false;
+                }
+
+                // Close the cURL resource, and free system resources
+                curl_close($codeURL);
             }
-            // Load user_profile plugin language
-            $lang = JFactory::getLanguage();
-            $lang->load($plg_context, JPATH_BASE . '/plugins/content/easycodeinclude');
+        }
 
-            $codeURL = curl_init($url);
-
-            // Include header in result?
-            curl_setopt($codeURL, CURLOPT_HEADER, 0);
-
-            // We want the data returned not printed
-            curl_setopt($codeURL, CURLOPT_RETURNTRANSFER, 1);
-
-            // Timeout in seconds
-            curl_setopt($codeURL, CURLOPT_TIMEOUT, 10);
-
-            // Download the given URL
-            $output = curl_exec($codeURL);
-
-            if ($output == '') {
-                $jAp->enqueueMessage(JText::_('PLG_EASYCODEINCLUDE_CURL_WASNT_ABLE_TO_GET_URL'), 'Notice');
-            }
-
+        // If we have output, then convert any leading left angle brackets & cache it
+        if ($output != false) {
             $output = str_replace('<', '&lt;', $output);
             $cache->store($output, $hashURL, $plg_context);
-
-            // Close the cURL resource, and free system resources
-            curl_close($codeURL);
         }
+
         return $output;
     }
 }
