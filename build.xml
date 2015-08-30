@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="EasyCode Include" default="package" basedir="./" >
+    <property name="name" value="easycodeinclude" />
+    <property name="type" value="plg" />
+    <property name="extension" value="${type}_${name}" />
+    <property name="repo" value="_Source" />
+    <property name="devBuildsDir" value="./_Dev_Builds" override="true" />
+
+    <!-- get our start time -->
+    <exec command='date +"%H:%M:%S"'
+          returnProperty="startReturn"
+          outputProperty="startTime" />
+    <echo msg="Starting at: ${startTime}" />
+
+    <!-- get our package date -->
+    <exec command='date +"%d-%b-%Y"'
+          returnProperty="dateReturn"
+          outputProperty="packageDate" />
+    <echo msg="Pack Date is: ${packageDate}" />
+
+    <!-- get our current tag -->
+    <exec command="git describe --tags `git log master -n 0 --pretty=format:%H`"
+          dir="${repo}"
+          returnProperty="gitReturn"
+          outputProperty="gitTag" />
+    <echo msg="Last Tag is: ${gitTag}" />
+
+    <!-- get the last commits hash -->
+    <exec command="git rev-parse --short HEAD"
+          dir="${repo}"
+          returnProperty="gitReturn"
+          outputProperty="gitHash" />
+    <echo msg="Last Commit is: ${gitHash}" />
+    
+    <property name="thisbuild" value="${gitTag}-${extension}" override="true" />
+    <property name="buildDir" value="./${devBuildsDir}/${thisbuild}" />
+
+    <!-- ============================================  -->
+    <!-- Target: prepare                               -->
+    <!-- ============================================  -->
+    <target name="prepare">
+        <echo msg="Making build directory ${buildDir}" />
+        <mkdir dir="${buildDir}" />
+    </target>
+
+    <!-- ============================================  -->
+    <!-- Target: build                                 -->
+    <!-- ============================================  -->
+    <target name="build" depends="prepare">
+        <echo msg="Copying files to build directory..." />
+        
+        <echo msg="Copying GIT Repo to ${buildDir} from ${repo}..." />
+        <copy todir="${buildDir}">
+        
+        <!-- The copy needs to ignore certain unneeded files from git and the OS etc. -->
+            <fileset dir="${repo}">
+                <include name="**" />
+                <exclude name="**/.git/**"/>
+                <exclude name=".gitignore"/>
+                <exclude name=".DS_Store"/>
+                <exclude name="**/.idea/**"/>
+            </fileset>
+            <filterchain>
+                <replacetokens begintoken="##" endtoken="##">
+                    <token key="VER" value="${gitTag}" />
+                    <token key="COMHASH" value="${gitHash}" />
+                    <token key="CREATEDATE" value="${packageDate}" />
+                </replacetokens>
+            </filterchain>
+        </copy>
+    </target>
+
+    <fileset dir="${buildDir}" id="packagefiles" >
+        <include name="**" />
+    </fileset>
+
+    <!-- ============================================  -->
+    <!-- (DEFAULT)  Target: package                    --> 
+    <!-- ============================================  -->
+    <target name="package" depends="build">
+        <echo msg="Creating archive..." />
+
+        <echo msg=".tar.gz archive first..." />
+        <tar destfile="${devBuildsDir}/${thisbuild}.tar.gz" compression="gzip">
+            <fileset refid="packagefiles">
+            </fileset>
+        </tar>
+
+        <echo msg=".zip archive last..." />
+        <zip destfile="${devBuildsDir}/${thisbuild}.zip">
+            <fileset refid="packagefiles">
+            </fileset>
+        </zip>
+        <echo msg="Files copied and compressed in build directory OK!" />
+        
+        <delete dir="${buildDir}" />
+    </target>
+</project>
