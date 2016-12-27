@@ -35,7 +35,7 @@ The most common error message you will receive is that the URL is incorrect, mor
 
 **URL** - The URL should point to the raw code file and be of the form
 
-```https://raw.github.com/user/project/branch/filename.suffix```
+`https://raw.github.com/user/project/branch/filename.suffix`
 
 If the URL doesn't start with http but does start with a leading slash /  then EasyCode Include will attempt to load a local file relative to the root of the website. The example below will load a file in the /images/code_samples/ directory.
 
