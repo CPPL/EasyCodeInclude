@@ -57,6 +57,40 @@ If you use multiple code blocks on a single page only the theme of the first cod
 
 **RANGE X-Y** - This is an optional parameter, if its provided EasyCode Include will only display lines X through Y of the file. You must specify both a starting line and an end line number e.g. 20-30 where 20 is the first line number and 30 the last.
 
+### Plugin Configuration
+You can configure the EasyCode Include plugins default values from the Plugin Manager as you would with any other Joomla! plugin. Don't worry we've put all the syntax tips in the plugin's Description view and we've added useful tooltips to all of the settings.
+![Plugin Settings](readme_images/Plugin_Settings.png)
+
+## Use Google?
+The Use Google option is a new feature in version 1.1.0 and allows you to use the Prettify files on Googles servers, which most time will be faster than using your own servers. Please note at the time of this writing note all languages supported by EasyCode Include are available In the CDN version, if you need a language style that isn't on the plugin try setting this option to NO to see if the plugin has it.
+
+## Include Prettify Javascript
+If you're not using Googles servers, this option allows you to prevent the inclusion of the Prettify.js files (if for example you're already including them through another means).
+
+## Include Prettify CSS
+If you're not using Googles servers, this option allows you to prevent the inclusion of the Prettify.css files (if for example you're already including them in your template CSS).
+
+## Code File Wrapper
+The raw code file is wrapped in a set of tags with the options being:
+
+ 1. `<code>` tags for HTML5 templates  
+ - `<code>` tags inside `<pre>` tags for non-HTML5 templates  
+ - `<pre>` only tags for old templates and browsers  
+
+If you're using a pure HTML5 template you will want to change this setting from the default to "Wrap in `<code>` tags".
+
+## Prettify Theme
+Allows you to set a default theme to be used when one isn't specified in the tags you embed in your article.
+
+## Force Cache?
+The one setting you may be tempted to play with is the "Force Cache" setting. Simply put as the plugin runs on your webserver it has to first retrieve the contents of the URL from another server, sometimes on less expensive hosting services this can take several seconds, which your end user will see as being a slow page load from your website.
+
+To avoid this issue the Joomla! cache is, by default, used even if you have Joomla!'s Global Cache setting turned off. To make the plugin obey your Joomla! settings simply set "Force Cahce?" to "No". Of, course this means if you have the cache turned off globally then your end users will see a pause on every page that uses the plugin.
+
+The cache is relatively smart, in that we cache the retrieved code file against a hash of it source URL, so even if the source file is used in multiple articles in your website it will only be retrieved once during each cache cycle.
+
+If you are loading your code file from the local webserver (i.e. somewhere inside your website root directory) then you can set this to "No" with minimal performance impact.
+
 #### Notes:
 - the plugin is called `plg_easycodeinclude` and can be [found here](https://extensions.joomla.org/extensions/extension/core-enhancements/coding-a-scripts-integration/easycode-include) on the [Joomla Extension Directory (JED)](http://extensions.joomla.org).
 
