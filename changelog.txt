@@ -1,0 +1,36 @@
+[2015-08-30]
+
+ + Added support for loading local files
+ + Validated for Joomla 3.4+
+ ! Renamed to better reflect general functionality
+ ! Updated to latest version of Prettify.
+ ! Updated to new Google CDN URL.
+
+
+[2013-04-02]
+
+ + Add support for new theme. Add support for using Google servers.
+ ! Upgrade Prettify to 4 March 2013 release.
+
+
+[2013-03-18]
+
+ + Add support for showing subset of a file (i.e. a range of lines)
+ ! Apply coding standards.
+
+
+[2012-06-30]
+
+ + Added missing index.html for JED
+ ! Handle CSS loading sensibly.
+ ! Change URL retrieval to make sure checking is down first.
+ ! Load language file.
+ ! Only modify `$article` if we have some output.
+ ! Change wrapper default to most common requirement.
+ ! Update XML to include `language` folder and `prettify` folder.
+ ! Move language files to J25 location.
+
+
+[2012-05-20]
+
+ + Initial commit.
